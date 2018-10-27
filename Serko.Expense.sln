@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expense.ApplicationCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expense.WebApi", "src\Serko.Expense.WebApi\Serko.Expense.WebApi.csproj", "{8B7CBD8A-6827-43F8-BCB0-1FE8A05EA768}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EEA84EDC-A8BB-4F33-BB6A-73B3E1AD6CE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expense.UnitTests", "tests\Serko.Expense.UnitTests\Serko.Expense.UnitTests.csproj", "{596C69C8-1B71-4992-857D-09B7A6FA9814}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +27,10 @@ Global
 		{8B7CBD8A-6827-43F8-BCB0-1FE8A05EA768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B7CBD8A-6827-43F8-BCB0-1FE8A05EA768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B7CBD8A-6827-43F8-BCB0-1FE8A05EA768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{596C69C8-1B71-4992-857D-09B7A6FA9814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{596C69C8-1B71-4992-857D-09B7A6FA9814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{596C69C8-1B71-4992-857D-09B7A6FA9814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{596C69C8-1B71-4992-857D-09B7A6FA9814}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{BADCDDC0-9F2E-49B2-9D55-CB73121DB655} = {3D580F7B-3E84-4400-AB64-362F77CDD1BE}
 		{8B7CBD8A-6827-43F8-BCB0-1FE8A05EA768} = {3D580F7B-3E84-4400-AB64-362F77CDD1BE}
+		{596C69C8-1B71-4992-857D-09B7A6FA9814} = {EEA84EDC-A8BB-4F33-BB6A-73B3E1AD6CE0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04856D2D-4F5E-428C-A4D4-BC40DFE66ADC}
