@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,11 @@ namespace Serko.Expense.ApplicationCore.Services
             throw new NotImplementedException();
         }
 
+        public bool ValidatePresenceOfTotalTag(string xmlText)
+        {
+            return xmlText != null && xmlText.Contains("<total>");
+        }
+
         public bool ValidateMatchOfOpeningClosingTags(string xmlText)
         {
             if (xmlText == null)
@@ -21,33 +27,42 @@ namespace Serko.Expense.ApplicationCore.Services
                 return true;
             }
 
-            var xmlRegex = new Regex(@"\<(/?\w+)\>");
-            var matches = xmlRegex.Matches(xmlText);
+            var tagsPresent = ExtractXmlTagsPresentInText(xmlText);
 
-            var xmlTags = new Stack<string>();
-            foreach (Match match in matches)
+            return ValidateOpeningClosingTagsMatched(tagsPresent);
+        }
+
+        private static IEnumerable<string> ExtractXmlTagsPresentInText(string xmlText)
+        {
+            var xmlRegex = new Regex(@"\<(/?\w+)\>");
+
+            var tags = from Match match in xmlRegex.Matches(xmlText)
+                       select match.Groups[1].ToString();
+
+            return tags;
+        }
+
+        private static bool ValidateOpeningClosingTagsMatched(IEnumerable<string> tags)
+        {
+            var openingTags = new Stack<string>();
+
+            foreach (var tag in tags)
             {
-                var tag = match.Groups[1].ToString();
                 if (!tag.StartsWith("/"))
                 {
-                    xmlTags.Push(tag);
+                    openingTags.Push(tag);
                 }
                 else
                 {
-                    if (xmlTags.Count == 0 ||
-                        !tag.Equals($"/{xmlTags.Pop()}", StringComparison.OrdinalIgnoreCase))
+                    if (openingTags.Count == 0 ||
+                        !tag.Equals($"/{openingTags.Pop()}", StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }
                 }
             }
 
-            return xmlTags.Count == 0;
-        }
-
-        public bool ValidatePresenceOfTotalTag(string xmlText)
-        {
-            return xmlText != null && xmlText.Contains("<total>");
+            return openingTags.Count == 0;
         }
     }
 }

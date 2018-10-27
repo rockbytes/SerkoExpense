@@ -4,37 +4,8 @@ using Xunit;
 
 namespace Serko.Expense.UnitTests
 {
-    public class XmlExpenseTextProcessorTests
+    public class XmlExpenseTextValidatorTests
     {
-//        [Fact]
-//        public void ExtractXmlContentFromText_ValidInput()
-//        {
-//            var textMixedWithXml = @"...
-//<expense><cost_centre>DEV002</cost_centre>
-//<total>1024.01</total><payment_method>personal card</payment_method>
-//</expense>
-//...
-//Please create a reservation at the <vendor>Viaduct Steakhouse</vendor> our
-//<description>development team’s project end celebration dinner</description> on
-//<date>Tuesday 27 April 2017</date>. We expect to arrive around 7.15pm.
-//...";
-
-//            var expectedResult = new List<string>
-//            {
-//                @"<expense><cost_centre>DEV002</cost_centre>
-//<total>1024.01</total><payment_method>personal card</payment_method>
-//</expense>",
-//                @"<vendor>Viaduct Steakhouse</vendor>",
-//                @"<description>development team’s project end celebration dinner</description>",
-//                @"<date>Tuesday 27 April 2017</date>"
-//            };
-
-//            var processor = new XmlExpenseTextProcessor();
-//            var actualResult = processor.ExtractXmlContentFromText(textMixedWithXml);
-
-//            Assert.Equal(expectedResult, actualResult);
-//        }
-
         #region ValidatePresenceOfTotalTag
 
         [Fact]
