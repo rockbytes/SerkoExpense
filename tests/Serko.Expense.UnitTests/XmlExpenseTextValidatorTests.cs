@@ -24,6 +24,21 @@ namespace Serko.Expense.UnitTests
         }
 
         [Fact]
+        public void ValidatePresenceOfTotalTag_WithMixedUpperLowerCase()
+        {
+            // Arrange
+            var textMixedWithXml = @"...
+<tOtAl>1024.01</total><payment_method>personal card</payment_method>";
+
+            // Act
+            var processor = new XmlExpenseTextValidator();
+            var actualResult = processor.ValidatePresenceOfTotalTag(textMixedWithXml);
+
+            // Assert
+            Assert.True(actualResult);
+        }
+
+        [Fact]
         public void ValidatePresenceOfTotalTag_TotalTagMissing()
         {
             // Arrange
@@ -91,10 +106,10 @@ total>1024.01</total><payment_method>personal card</payment_method>";
             // Arrange
             var textMixedWithXml = @"...
 <expense><cost_centre>DEV002</cost_centre>
-<total>1024.01</total><payment_method>personal card</payment_method>
+<TOtal>1024.01</total><payment_method>personal card</payment_method>
 </expense>
 ...
-Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
+Please create a reservation at the<vendor>Viaduct Steakhouse</VENDOR> our
 <description> development team’s project end celebration dinner </description> on
 <date> Tuesday 27 April 2017 </date>.We expect to arrive around 7.15pm.
     ...";
