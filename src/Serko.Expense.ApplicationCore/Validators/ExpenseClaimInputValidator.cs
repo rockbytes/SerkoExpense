@@ -1,28 +1,39 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Serko.Expense.ApplicationCore.Interfaces;
+using FluentValidation;
+using Serko.Expense.ApplicationCore.Dtos;
 
-namespace Serko.Expense.ApplicationCore.Services
+namespace Serko.Expense.ApplicationCore.Validators
 {
-    public class XmlExpenseTextValidator : IExpenseTextValidator
+    public class ExpenseClaimInputValidator : AbstractValidator<ExpenseClaimInput>
     {
-        public bool Validate(string expenseText)
+        public ExpenseClaimInputValidator()
         {
-            throw new NotImplementedException();
+            RuleFor(x => x.ExpenseClaimXmlText)
+                .NotEmpty() // NotEmpty covers both the null and empty.
+                .WithMessage("The expense claim text should not be blank.");
+
+			RuleFor(x => x.ExpenseClaimXmlText)
+		        .Must(TotalTagPresent)
+		        .WithMessage("The expense claim text should specify amount with <total> XML tag.");
+
+	        RuleFor(x => x.ExpenseClaimXmlText)
+		        .Must(OpeningClosingTagsMatched)
+		        .WithMessage("The expense claim text should have its opening and closing XML tags matched.");
         }
 
-        public bool ValidatePresenceOfTotalTag(string xmlText)
+        private static bool TotalTagPresent(string xmlText)
         {
-            return xmlText != null && xmlText.Contains("<total>");
+            return string.IsNullOrEmpty(xmlText) ||
+                   xmlText.ToLowerInvariant().Contains("<total>");
         }
 
-        public bool ValidateMatchOfOpeningClosingTags(string xmlText)
+        private static bool OpeningClosingTagsMatched(string xmlText)
         {
-            if (xmlText == null)
+            if (string.IsNullOrEmpty(xmlText))
             {
                 return true;
             }
