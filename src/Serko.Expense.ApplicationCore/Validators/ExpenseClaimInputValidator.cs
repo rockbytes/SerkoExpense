@@ -12,7 +12,7 @@ namespace Serko.Expense.ApplicationCore.Validators
     {
         public ExpenseClaimInputValidator()
         {
-			// TODO: refactor the hard-coded messages
+			// TODO: refactor the hard-coded messages and make it localized
 
             RuleFor(x => x.ExpenseClaimText)
                 .NotEmpty() // NotEmpty covers both the null and empty.

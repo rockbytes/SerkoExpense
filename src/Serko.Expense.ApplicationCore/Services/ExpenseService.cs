@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using FluentValidation.Results;
 using Serko.Expense.ApplicationCore.Dtos;
 using Serko.Expense.ApplicationCore.Exceptions;
 using Serko.Expense.ApplicationCore.Interfaces;
@@ -27,8 +24,7 @@ namespace Serko.Expense.ApplicationCore.Services
 		{
 			ValidateExpenseClaimInput(input);
 
-			IDictionary<string, string> xmlData =
-				ExtractXmlDataFromText(input.ExpenseClaimText);
+			var xmlData = ExtractXmlDataFromText(input.ExpenseClaimText);
 
 			return GenerateOutputBasedOnXmlData(xmlData);
 		}
@@ -55,14 +51,14 @@ namespace Serko.Expense.ApplicationCore.Services
 			return tagsAndValues;
 		}
 
-		private IDictionary<string, string> GenerateOutputBasedOnXmlData(
+		private static IDictionary<string, string> GenerateOutputBasedOnXmlData(
 			IDictionary<string, string> xmlData)
 		{
 			// Parse total with gst
 			if (!decimal.TryParse(xmlData["total"], out var totalWithGst))
 			{
 				throw new ValidationException("Total",
-					$"The value '{xmlData["total"]}' should numeric.");
+					$"The value '{xmlData["total"]}' should be numeric.");
 			}
 
 			// Calculate the gst and the total_without_gst

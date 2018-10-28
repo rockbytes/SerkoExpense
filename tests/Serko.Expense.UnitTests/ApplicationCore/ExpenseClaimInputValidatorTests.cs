@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using FluentValidation.Results;
 using Serko.Expense.ApplicationCore.Dtos;
-using Serko.Expense.ApplicationCore.Services;
 using Serko.Expense.ApplicationCore.Validators;
 using Xunit;
 
-namespace Serko.Expense.UnitTests
+namespace Serko.Expense.UnitTests.ApplicationCore
 {
 	public class ExpenseClaimInputValidatorTests
 	{

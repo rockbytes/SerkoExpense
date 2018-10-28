@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Serko.Expense.ApplicationCore.Dtos;
 using Serko.Expense.ApplicationCore.Exceptions;
 using Serko.Expense.ApplicationCore.Services;
 using Xunit;
 
-namespace Serko.Expense.UnitTests
+namespace Serko.Expense.UnitTests.ApplicationCore
 {
 	public class ExpenseServiceTests
 	{
