@@ -12,15 +12,17 @@ namespace Serko.Expense.ApplicationCore.Validators
     {
         public ExpenseClaimInputValidator()
         {
-            RuleFor(x => x.ExpenseClaimXmlText)
+			// TODO: refactor the hard-coded messages
+
+            RuleFor(x => x.ExpenseClaimText)
                 .NotEmpty() // NotEmpty covers both the null and empty.
                 .WithMessage("The expense claim text should not be blank.");
 
-			RuleFor(x => x.ExpenseClaimXmlText)
+			RuleFor(x => x.ExpenseClaimText)
 		        .Must(TotalTagPresent)
 		        .WithMessage("The expense claim text should specify amount with <total> XML tag.");
 
-	        RuleFor(x => x.ExpenseClaimXmlText)
+	        RuleFor(x => x.ExpenseClaimText)
 		        .Must(OpeningClosingTagsMatched)
 		        .WithMessage("The expense claim text should have its opening and closing XML tags matched.");
         }

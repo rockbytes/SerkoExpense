@@ -16,6 +16,8 @@ namespace Serko.Expense.UnitTests
 		private readonly ExpenseClaimInputValidator _inputValidator = 
 			new ExpenseClaimInputValidator();
 
+		// TODO: refactor duplicated code
+
 		#region NotNullEmpty
 
 		[Fact]
@@ -24,7 +26,7 @@ namespace Serko.Expense.UnitTests
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = ""
+				ExpenseClaimText = ""
 			};
 
 			var expectedErrorMsgs = new List<string>
@@ -45,7 +47,7 @@ namespace Serko.Expense.UnitTests
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = null
+				ExpenseClaimText = null
 			};
 
 			var expectedErrorMsgs = new List<string>
@@ -70,7 +72,7 @@ namespace Serko.Expense.UnitTests
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 <total>1024.01</total><payment_method>personal card</payment_method>"
 			};
 
@@ -87,7 +89,7 @@ namespace Serko.Expense.UnitTests
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 <tOtAl>1024.01</total><payment_method>personal card</payment_method>"
 			};
 
@@ -104,7 +106,7 @@ namespace Serko.Expense.UnitTests
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 <totalDummySuffix>1024.01</total><payment_method>personal card</payment_method>"
 			};
 
@@ -127,7 +129,7 @@ namespace Serko.Expense.UnitTests
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 total>1024.01</total><payment_method>personal card</payment_method>"
 			};
 
@@ -154,7 +156,7 @@ total>1024.01</total><payment_method>personal card</payment_method>"
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 <expense><cost_centre>DEV002</cost_centre>
 <TOtal>1024.01</total><payment_method>personal card</payment_method>
 </expense>
@@ -178,7 +180,7 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</VENDOR> our
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 <cost_centre>DEV002</cost_centre><total>1024.01</total></expense>"
 			};
 
@@ -200,7 +202,7 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</VENDOR> our
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 <expense><cost_centre>DEV002</cost_centre><total>1024.01</expense>"
 			};
 
@@ -222,7 +224,7 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</VENDOR> our
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimXmlText = @"...
+				ExpenseClaimText = @"...
 <cost_centre>DEV002</cost_centre><total>1024.01</expense>"
 			};
 
