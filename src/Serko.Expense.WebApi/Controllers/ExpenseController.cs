@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Serko.Expense.ApplicationCore.Dtos;
+using Serko.Expense.ApplicationCore.Interfaces;
 
 namespace Serko.Expense.WebApi.Controllers
 {
@@ -11,10 +13,21 @@ namespace Serko.Expense.WebApi.Controllers
     [ApiController]
     public class ExpenseController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult Post([FromBody] string expenseText)
+        private readonly IExpenseService _expenseService;
+
+        public ExpenseController(IExpenseService expenseService)
         {
-            return Ok("post");
+            _expenseService = expenseService;
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] string expenseClaimText)
+        {
+            return Ok(_expenseService.CreateExpenseClaimFromInput(
+				new ExpenseClaimInput
+				{
+					ExpenseClaimText = expenseClaimText
+				}));
         }
     }
 }

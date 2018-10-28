@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Serko.Expense.ApplicationCore.Interfaces;
+using Serko.Expense.ApplicationCore.Services;
+using Serko.Expense.WebApi.Filters;
 
 namespace Serko.Expense.WebApi
 {
@@ -25,7 +28,10 @@ namespace Serko.Expense.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddScoped<IExpenseService, ExpenseService>();
+
+            services.AddMvc(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
