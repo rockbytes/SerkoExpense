@@ -7,6 +7,6 @@ namespace Serko.Expense.ApplicationCore.Interfaces
 {
     public interface IExpenseService
     {
-        ExpenseDto ExtractExpenseFromText(string expenseText);
+		IDictionary<string, string> CreateExpenseClaimFromInput(ExpenseClaimInput input);
     }
 }

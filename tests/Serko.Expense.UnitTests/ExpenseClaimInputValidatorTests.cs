@@ -90,14 +90,19 @@ namespace Serko.Expense.UnitTests
 			var input = new ExpenseClaimInput
 			{
 				ExpenseClaimText = @"...
-<tOtAl>1024.01</total><payment_method>personal card</payment_method>"
+<tOtAl>1024.01</tOtAl><payment_method>personal card</payment_method>"
+			};
+
+			var expectedErrorMsgs = new List<string>
+			{
+				@"The expense claim text should specify amount with <total> XML tag.",
 			};
 
 			// Act
 			var result = _inputValidator.Validate(input);
 
 			// Assert
-			Assert.True(result.Errors.Count == 0);
+			Assert.Equal(expectedErrorMsgs, result.Errors.Select(e => e.ErrorMessage));
 		}
 
 		[Fact]
@@ -158,10 +163,10 @@ total>1024.01</total><payment_method>personal card</payment_method>"
 			{
 				ExpenseClaimText = @"...
 <expense><cost_centre>DEV002</cost_centre>
-<TOtal>1024.01</total><payment_method>personal card</payment_method>
+<total>1024.01</total><payment_method>personal card</payment_method>
 </expense>
 ...
-Please create a reservation at the<vendor>Viaduct Steakhouse</VENDOR> our
+Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
 <description> development team’s project end celebration dinner </description> on
 <date> Tuesday 27 April 2017 </date>.We expect to arrive around 7.15pm.
     ..."

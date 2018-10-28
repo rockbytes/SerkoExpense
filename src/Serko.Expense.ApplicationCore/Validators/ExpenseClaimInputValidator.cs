@@ -29,8 +29,7 @@ namespace Serko.Expense.ApplicationCore.Validators
 
         private static bool TotalTagPresent(string xmlText)
         {
-            return string.IsNullOrEmpty(xmlText) ||
-                   xmlText.ToLowerInvariant().Contains("<total>");
+            return string.IsNullOrEmpty(xmlText) || xmlText.Contains("<total>");
         }
 
         private static bool OpeningClosingTagsMatched(string xmlText)
@@ -67,8 +66,7 @@ namespace Serko.Expense.ApplicationCore.Validators
                 }
                 else
                 {
-                    if (openingTags.Count == 0 ||
-                        !tag.Equals($"/{openingTags.Pop()}", StringComparison.OrdinalIgnoreCase))
+                    if (openingTags.Count == 0 || !tag.Equals($"/{openingTags.Pop()}"))
                     {
                         return false;
                     }
