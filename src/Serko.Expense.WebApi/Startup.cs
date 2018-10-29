@@ -1,4 +1,7 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +11,7 @@ using Serko.Expense.ApplicationCore.Interfaces;
 using Serko.Expense.ApplicationCore.Services;
 using Serko.Expense.ApplicationCore.Validators;
 using Serko.Expense.WebApi.Filters;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Serko.Expense.WebApi
 {
@@ -28,7 +32,22 @@ namespace Serko.Expense.WebApi
             services.AddMvc(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
 				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExpenseClaimInputValidator>());
-        }
+
+	        // Register the Swagger generator
+			services.AddSwaggerGen(c =>
+	        {
+		        c.SwaggerDoc("v1", new Info
+		        {
+					Version = "v1",
+					Title = "Serko API"
+				});
+
+				// Set the comments path for the Swagger JSON and UI.
+				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+				var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+				c.IncludeXmlComments(xmlPath);
+			});
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -37,6 +56,16 @@ namespace Serko.Expense.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+	        // Enable middleware to serve generated Swagger as a JSON endpoint.
+			app.UseSwagger();
+
+			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+			// specifying the Swagger JSON endpoint.
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Serko API V1");
+			});
 
             app.UseMvc();
         }

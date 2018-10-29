@@ -15,8 +15,24 @@ namespace Serko.Expense.WebApi.Controllers
             _expenseService = expenseService;
         }
 
-        [HttpPost]
-        public IActionResult Post([FromBody] string expenseClaimText)
+		/// <summary>
+		/// Creates an expense
+		/// </summary>
+		/// <remarks>
+		/// Sample request:
+		///
+		///     POST /api/expense 
+		///        "<expense>
+		/// <cost_centre>DEV002</cost_centre>
+		/// <total>1024.01</total>
+		/// <payment_method>personal card</payment_method>
+		/// </expense>"
+		///
+		/// </remarks>
+		/// <param name="expenseClaimText"></param>
+		/// <returns>An expense in JSON format</returns>
+		[HttpPost]
+        public IActionResult Create([FromBody] string expenseClaimText)
         {
             return Ok(_expenseService.CreateExpenseClaimFromInput(
 				new ExpenseClaimInput
