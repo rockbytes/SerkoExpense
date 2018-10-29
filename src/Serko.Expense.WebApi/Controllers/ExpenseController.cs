@@ -8,7 +8,6 @@ using Serko.Expense.ApplicationCore.Interfaces;
 
 namespace Serko.Expense.WebApi.Controllers
 {
-    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class ExpenseController : ControllerBase

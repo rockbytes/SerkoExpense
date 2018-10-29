@@ -12,33 +12,34 @@ namespace Serko.Expense.ApplicationCore.Validators
     {
         public ExpenseClaimInputValidator()
         {
-			// TODO: refactor the hard-coded messages and make it localized
-
             RuleFor(x => x.ExpenseClaimText)
                 .NotEmpty() // NotEmpty covers both the null and empty.
-                .WithMessage("The expense claim text should not be blank.");
+                .WithMessage(ValidationMessages.ExpenseClaimTextNotBeBlank);
 
-			RuleFor(x => x.ExpenseClaimText)
-		        .Must(TotalTagPresent)
-		        .WithMessage("The expense claim text should specify amount with <total> XML tag.");
+            When(x => !string.IsNullOrEmpty(x.ExpenseClaimText), () =>
+            {
+                RuleFor(x => x.ExpenseClaimText)
+                    .Must(OpeningClosingTagsMatched)
+                    .WithMessage(ValidationMessages.ExpenseClaimTextOpeningClosingTagsMatched);
 
-	        RuleFor(x => x.ExpenseClaimText)
-		        .Must(OpeningClosingTagsMatched)
-		        .WithMessage("The expense claim text should have its opening and closing XML tags matched.");
+                RuleFor(x => x.ExpenseClaimText)
+                    .Must(NumericTotalValuePresent)
+                    .WithMessage(ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue);
+            });
         }
 
-        private static bool TotalTagPresent(string xmlText)
+        private static bool NumericTotalValuePresent(string xmlText)
         {
-            return string.IsNullOrEmpty(xmlText) || xmlText.Contains("<total>");
+            var xmlRex = new Regex(@"\<total\>(?<value>.+)\</total>");
+
+            var match = xmlRex.Match(xmlText);
+
+            return match.Success && 
+                decimal.TryParse(match.Groups["value"].ToString().Trim(), out var dummy);
         }
 
         private static bool OpeningClosingTagsMatched(string xmlText)
         {
-            if (string.IsNullOrEmpty(xmlText))
-            {
-                return true;
-            }
-
             var tagsPresent = ExtractXmlTagsPresentInText(xmlText);
 
             return ValidateOpeningClosingTagsMatched(tagsPresent);

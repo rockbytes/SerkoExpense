@@ -54,19 +54,14 @@ namespace Serko.Expense.ApplicationCore.Services
 		private static IDictionary<string, string> GenerateOutputBasedOnXmlData(
 			IDictionary<string, string> xmlData)
 		{
-			// Parse total with gst
-			if (!decimal.TryParse(xmlData["total"], out var totalWithGst))
-			{
-				throw new ValidationException("Total",
-					$"The value '{xmlData["total"]}' should be numeric.");
-			}
+		    var totalWithGst = decimal.Parse(xmlData["total"]);
 
-			// Calculate the gst and the total_without_gst
 			var countryCode = xmlData.ContainsKey("country_code")
 				? xmlData["country_code"]
 				: CountryCodes.NewZealand;
 
-			decimal totalWithoutGst = CalculateTotalWithoutGst(totalWithGst,
+		    // Calculate the gst and the total_without_gst
+            decimal totalWithoutGst = CalculateTotalWithoutGst(totalWithGst,
 				GstRates.GetRate(countryCode));
 
 			xmlData["total_without_gst"] = totalWithoutGst
