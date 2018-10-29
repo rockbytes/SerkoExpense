@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Serko.Expense.ApplicationCore.Utilities
+﻿namespace Serko.Expense.ApplicationCore.Utilities
 {
 	// TODO: check built-in country code ?
 	public class CountryCodes

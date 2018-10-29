@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Serko.Expense.ApplicationCore.Validators
+﻿namespace Serko.Expense.ApplicationCore.Validators
 {
     public class ValidationMessages
     {

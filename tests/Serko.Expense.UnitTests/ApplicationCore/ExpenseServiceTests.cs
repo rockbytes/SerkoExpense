@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using Serko.Expense.ApplicationCore.Dtos;
-using Serko.Expense.ApplicationCore.Exceptions;
 using Serko.Expense.ApplicationCore.Services;
+using Serko.Expense.ApplicationCore.Validators;
 using Xunit;
+using ValidationException = Serko.Expense.ApplicationCore.Exceptions.ValidationException;
 
 namespace Serko.Expense.UnitTests.ApplicationCore
 {
 	public class ExpenseServiceTests
 	{
 		private readonly ExpenseService _service = 
-			new ExpenseService();
+			new ExpenseService(new ExpenseClaimInputValidator());
 
 		#region CreateExpenseClaimFromInput
 
