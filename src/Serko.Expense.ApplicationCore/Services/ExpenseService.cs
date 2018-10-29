@@ -76,7 +76,8 @@ namespace Serko.Expense.ApplicationCore.Services
 				.ToString("F2", CultureInfo.InvariantCulture);
 
 			// Set cost_centre to UNKNOWN if it is missing
-			if (!xmlData.ContainsKey("cost_centre"))
+			if (!xmlData.ContainsKey("cost_centre") ||
+				string.IsNullOrEmpty(xmlData["cost_centre"]))
 			{
 				xmlData["cost_centre"] = "UNKNOWN";
 			}
