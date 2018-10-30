@@ -72,6 +72,8 @@ namespace Serko.Expense.ApplicationCore.Services
 		{
 		    var totalWithGst = decimal.Parse(xmlData["total"]);
 
+            // If client does not specify country_code, default
+            // it to the one of New Zealand.
 			var countryCode = xmlData.ContainsKey("country_code")
 				? xmlData["country_code"]
 				: CountryCodes.NewZealand;

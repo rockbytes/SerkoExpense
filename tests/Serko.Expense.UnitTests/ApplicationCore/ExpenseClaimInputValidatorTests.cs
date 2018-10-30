@@ -66,13 +66,14 @@ namespace Serko.Expense.UnitTests.ApplicationCore
         public void TotalTagPresent_NotNumericValue()
         {
             // Arrange
+            var amount = "1024.01abc";
 
-            var expenseClaimText = @"...
-<total>1024.01abc</total><payment_method>personal card</payment_method>";
+            var expenseClaimText = $@"...
+<total>{amount}</total><payment_method>personal card</payment_method>";
 
             var expectedErrorMsgs = new List<string>
             {
-                ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue
+                string.Format(ValidationMessages.TotalAmountShouldBeNumeric, amount)
             };
 
             ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -87,7 +88,7 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 
             var expectedErrorMsgs = new List<string>
             {
-                ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue
+                ValidationMessages.TotalAmountNotPresentInExpenseClaimText
             };
 
             ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -97,29 +98,14 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 		public void TotalTagPresent_TotalTagMissing()
 		{
             // Arrange
-            var expenseClaimText = @"...
-<totalDummySuffix>1024.01</total><payment_method>personal card</payment_method>";
+		    var tag = "/total";
+            var expenseClaimText = $@"...
+total>1024.01<{tag}><payment_method>personal card</payment_method>";
 
             var expectedErrorMsgs = new List<string>
             {
-                ValidationMessages.ExpenseClaimTextOpeningClosingTagsMatched,
-                ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue
-            };
-
-            ActAndAssert(expenseClaimText, expectedErrorMsgs);
-        }
-
-		[Fact]
-		public void TotalTagPresent_TotalIsNotXmlTag()
-		{
-            // Arrange
-            var expenseClaimText = @"...
-total>1024.01</total><payment_method>personal card</payment_method>";
-
-            var expectedErrorMsgs = new List<string>
-            {
-                ValidationMessages.ExpenseClaimTextOpeningClosingTagsMatched,
-                ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue
+                string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, tag),
+                ValidationMessages.TotalAmountNotPresentInExpenseClaimText
             };
 
             ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -157,12 +143,14 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
 		public void OpeningClosingTagsMatched_OpeningTagsMissing()
 		{
             // Arrange
-            var expenseClaimText = @"...
-<cost_centre>DEV002</cost_centre><total>1024.01</total></expense>";
+		    var tag = "/expense";
+
+            var expenseClaimText = $@"...
+<cost_centre>DEV002</cost_centre><total>1024.01</total><{tag}>";
 
             var expectedErrorMsgs = new List<string>
             {
-                ValidationMessages.ExpenseClaimTextOpeningClosingTagsMatched
+                string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, tag)
             };
 
             ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -172,13 +160,13 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
 		public void OpeningClosingTagsMatched_ClosingTagsMissing()
 		{
             // Arrange
-            var expenseClaimText = @"...
-<expense><cost_centre>DEV002</cost_centre><total>1024.01</expense> ";
+		    var tag = "cost_centre";
+            var expenseClaimText = $@"...
+<expense><total>1024.01</total><{tag}>DEV002</expense> ";
 
             var expectedErrorMsgs = new List<string>
             {
-                ValidationMessages.ExpenseClaimTextOpeningClosingTagsMatched,
-                ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue
+                string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag)
             };
 
             ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -188,21 +176,52 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
 		public void OpeningClosingTagsMatched_BothOpeningAndClosingTagsMissing()
 		{
 			// Arrange
-		    var expenseClaimText = @"...
-<cost_centre>DEV002</cost_centre><total>1024.01</expense>";
+		    var tag = "total";
+		    var expenseClaimText = $@"...
+<cost_centre>DEV002</cost_centre><{tag}>1024.01</expense>";
 
 			var expectedErrorMsgs = new List<string>
 			{
-                ValidationMessages.ExpenseClaimTextOpeningClosingTagsMatched,
-                ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue
-			};
+                string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag),
+			    ValidationMessages.TotalAmountNotPresentInExpenseClaimText
+            };
 
 		    ActAndAssert(expenseClaimText, expectedErrorMsgs);
 		}
 
-		#endregion
+        [Fact]
+        public void OpeningClosingTagsMatched_OnlyHaveOpeningTags()
+        {
+            // Arrange
+            var expenseClaimText = @"...
+<cost_centre>DEV002<payment_method><total>1024.01</total>";
 
-	    private void ActAndAssert(string expenseClaimTextInput, IList<string> expectedErrorMsgs)
+            var expectedErrorMsgs = new List<string>
+            {
+                string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, "payment_method"),
+            };
+
+            ActAndAssert(expenseClaimText, expectedErrorMsgs);
+        }
+
+        [Fact]
+        public void OpeningClosingTagsMatched_OnlyHaveClosingTags()
+        {
+            // Arrange
+            var expenseClaimText = @"...
+</cost_centre>DEV002</payment_method><total>1024.01</total>";
+
+            var expectedErrorMsgs = new List<string>
+            {
+                string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, "/cost_centre"),
+            };
+
+            ActAndAssert(expenseClaimText, expectedErrorMsgs);
+        }
+
+        #endregion
+
+        private void ActAndAssert(string expenseClaimTextInput, IList<string> expectedErrorMsgs)
 	    {
             // Act
 	        var result = _inputValidator.Validate(new ExpenseClaimInput

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using FluentValidation;
+using FluentValidation.Validators;
 using Serko.Expense.ApplicationCore.Dtos;
 
 namespace Serko.Expense.ApplicationCore.Validators
@@ -17,30 +18,38 @@ namespace Serko.Expense.ApplicationCore.Validators
             When(x => !string.IsNullOrEmpty(x.ExpenseClaimText), () =>
             {
                 RuleFor(x => x.ExpenseClaimText)
-                    .Must(OpeningClosingTagsMatched)
-                    .WithMessage(ValidationMessages.ExpenseClaimTextOpeningClosingTagsMatched);
+                    .Custom(OpeningClosingTagsMatched);
 
                 RuleFor(x => x.ExpenseClaimText)
-                    .Must(NumericTotalValuePresent)
-                    .WithMessage(ValidationMessages.ExpenseClaimTextSpecifyNumericTotalValue);
+                    .Custom(NumericTotalValuePresent);
             });
         }
 
-        private static bool NumericTotalValuePresent(string xmlText)
+        private static void NumericTotalValuePresent(string xmlText, CustomContext context)
         {
             var xmlRex = new Regex(@"\<total\>(?<value>.+)\</total\>", RegexOptions.Singleline);
 
             var match = xmlRex.Match(xmlText);
 
-            return match.Success && 
-                decimal.TryParse(match.Groups["value"].ToString().Trim(), out var dummy);
+            if (!match.Success)
+            {
+                context.AddFailure(ValidationMessages.TotalAmountNotPresentInExpenseClaimText);
+            }
+            else
+            {
+                var total = match.Groups["value"].ToString();
+                if (!decimal.TryParse(total.Trim(), out var dummy))
+                {
+                    context.AddFailure(string.Format(ValidationMessages.TotalAmountShouldBeNumeric, total));
+                }
+            }
         }
 
-        private static bool OpeningClosingTagsMatched(string xmlText)
+        private static void OpeningClosingTagsMatched(string xmlText, CustomContext context)
         {
             var tagsPresent = ExtractXmlTagsPresentInText(xmlText);
 
-            return ValidateOpeningClosingTagsMatched(tagsPresent);
+            ValidateOpeningClosingTagsMatched(tagsPresent, context);
         }
 
         private static IEnumerable<string> ExtractXmlTagsPresentInText(string xmlText)
@@ -53,26 +62,45 @@ namespace Serko.Expense.ApplicationCore.Validators
             return tags;
         }
 
-        private static bool ValidateOpeningClosingTagsMatched(IEnumerable<string> tags)
+        private static void ValidateOpeningClosingTagsMatched(IEnumerable<string> tags, CustomContext context)
         {
-            var openingTags = new Stack<string>();
+            var closingTags = new Stack<string>();
 
-            foreach (var tag in tags)
+            foreach (var tag in tags.Reverse())
             {
-                if (!tag.StartsWith("/"))
+                if (tag.StartsWith("/"))
                 {
-                    openingTags.Push(tag);
+                    closingTags.Push(tag);
                 }
-                else
+                else // tag is an opening tag
                 {
-                    if (openingTags.Count == 0 || !tag.Equals($"/{openingTags.Pop()}"))
+                    if (closingTags.Count == 0)
                     {
-                        return false;
+                        context.AddFailure(string.Format(
+                            ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag));
+
+                        return;
+                    }
+
+                    var currClosingTag = closingTags.Pop();
+                    if (!currClosingTag.Equals($"/{tag}"))
+                    {
+                        var msg = closingTags.Contains($"/{tag}")
+                            ? string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, currClosingTag)
+                            : string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag);
+  
+                        context.AddFailure(msg);
+
+                        return;
                     }
                 }
             }
 
-            return openingTags.Count == 0;
+            if (closingTags.Count > 0)
+            {
+                context.AddFailure(string.Format(
+                    ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, closingTags.Peek()));
+            }
         }
     }
 }
