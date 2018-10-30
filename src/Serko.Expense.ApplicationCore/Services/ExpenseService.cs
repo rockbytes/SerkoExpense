@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 using FluentValidation;
 using Serko.Expense.ApplicationCore.Dtos;
 using Serko.Expense.ApplicationCore.Interfaces;
@@ -36,21 +38,30 @@ namespace Serko.Expense.ApplicationCore.Services
 		    }
 	    }
 
-		private static IDictionary<string, string> ExtractXmlDataFromText(string xmlText)
+		private static IDictionary<string, string> ExtractXmlDataFromText(string textWithXml)
 		{
-			var xmlRegex = new Regex(@"\<(?<tag>\w+)\>(?<value>.+)\</\k<tag>\>");
-			var matches = xmlRegex.Matches(xmlText);
+			var xmlRegex = new Regex(@"\<(?<tag>\w+)\>.+\</\k<tag>\>", RegexOptions.Singleline);
+			var matches = xmlRegex.Matches(textWithXml);
 
-            // Assume tags does not duplicate in the text. If there are
-		    // duplications, the first one will be used.
             var tagsAndValues = new Dictionary<string, string>();
 		    foreach (Match match in matches)
 		    {
-                var tag = match.Groups["tag"].ToString();
-		        if (!tagsAndValues.ContainsKey(tag))
-		        {
-		            tagsAndValues.Add(tag, match.Groups["value"].ToString().Trim());
-                }    
+			    var xmlDoc = XDocument.Parse(match.Groups[0].ToString());
+
+				// Select all the leaves (which do not have children)
+			    var leaves = xmlDoc.Descendants().Where(e => !e.Elements().Any());
+
+				// Extract the leaf tag name and value. Assume tags does not 
+				// duplicate in the input text. If there are duplicated tags,
+				// the first one will be used.
+				foreach (var leaf in leaves)
+			    {
+					var tag = leaf.Name.ToString();
+					if (!tagsAndValues.ContainsKey(tag))
+					{
+						tagsAndValues.Add(tag, leaf.Value.Trim());
+					}
+				} 
 		    }
 
 		    return tagsAndValues;

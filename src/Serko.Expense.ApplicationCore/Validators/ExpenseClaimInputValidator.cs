@@ -28,7 +28,7 @@ namespace Serko.Expense.ApplicationCore.Validators
 
         private static bool NumericTotalValuePresent(string xmlText)
         {
-            var xmlRex = new Regex(@"\<total\>(?<value>.+)\</total>");
+            var xmlRex = new Regex(@"\<total\>(?<value>.+)\</total\>", RegexOptions.Singleline);
 
             var match = xmlRex.Match(xmlText);
 
