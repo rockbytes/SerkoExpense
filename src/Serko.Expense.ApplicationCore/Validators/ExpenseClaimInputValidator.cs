@@ -27,16 +27,21 @@ namespace Serko.Expense.ApplicationCore.Validators
 
         private static void NumericTotalValuePresent(string xmlText, CustomContext context)
         {
+            // Assume the text block contains single <total> amount. If there are multiple ones,
+            // the first will be used.
+
             var xmlRex = new Regex(@"\<total\>(?<value>.+)\</total\>", RegexOptions.Singleline);
 
             var match = xmlRex.Match(xmlText);
 
             if (!match.Success)
             {
+                // <total> amount is missing
                 context.AddFailure(ValidationMessages.TotalAmountNotPresentInExpenseClaimText);
             }
             else
             {
+                // Handle invalid <total> data, e.g. <total>123.123abc</total>
                 var total = match.Groups["value"].ToString();
                 if (!decimal.TryParse(total.Trim(), out var dummy))
                 {
@@ -54,6 +59,8 @@ namespace Serko.Expense.ApplicationCore.Validators
 
         private static IEnumerable<string> ExtractXmlTagsPresentInText(string xmlText)
         {
+            // Extract all the opening and closing tags appearing in the text
+
             var xmlRegex = new Regex(@"\<(/?\w+)\>");
 
             var tags = from Match match in xmlRegex.Matches(xmlText)
