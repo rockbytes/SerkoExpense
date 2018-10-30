@@ -16,7 +16,7 @@ namespace Serko.Expense.WebApi.Controllers
         }
 
 		/// <summary>
-		/// Creates an expense
+		/// Extract expense claim data from text
 		/// </summary>
 		/// <remarks>
 		/// Sample request:
@@ -30,7 +30,7 @@ namespace Serko.Expense.WebApi.Controllers
 		///
 		/// </remarks>
 		/// <param name="expenseClaimText"></param>
-		/// <returns>An expense in JSON format</returns>
+		/// <returns>A JSON object containing expense claim data extracted</returns>
 		[HttpPost]
         public IActionResult Create([FromBody] string expenseClaimText)
         {
