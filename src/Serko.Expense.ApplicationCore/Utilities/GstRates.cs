@@ -13,8 +13,8 @@ namespace Serko.Expense.ApplicationCore.Utilities
 
 		// TODO: inform users if gst rate does not exist, instead of returning NZ's
 
-		public static decimal GetRate(string countryCode) => 
-			countryCode != null && GstRatesByCountry.ContainsKey(countryCode) 
+		public static decimal GetRate(string countryCode) =>
+			countryCode != null && GstRatesByCountry.ContainsKey(countryCode)
 				? GstRatesByCountry[countryCode]
 				: GstRatesByCountry[CountryCodes.NewZealand];
 	}

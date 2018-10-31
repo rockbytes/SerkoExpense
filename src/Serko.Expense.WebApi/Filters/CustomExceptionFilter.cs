@@ -5,27 +5,27 @@ using Serko.Expense.ApplicationCore.Exceptions;
 
 namespace Serko.Expense.WebApi.Filters
 {
-    public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
-    {
-        public override void OnException(ExceptionContext context)
-        {
-	        if (context.Exception is ValidationException exception)
-            {
-                context.HttpContext.Response.ContentType = "application/json";
-                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Result = new JsonResult(exception.Failures);
+	public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
+	{
+		public override void OnException(ExceptionContext context)
+		{
+			if (context.Exception is ValidationException exception)
+			{
+				context.HttpContext.Response.ContentType = "application/json";
+				context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+				context.Result = new JsonResult(exception.Failures);
 
-                return;
-            }
+				return;
+			}
 
-            var code = HttpStatusCode.InternalServerError;
+			var code = HttpStatusCode.InternalServerError;
 
-            context.HttpContext.Response.ContentType = "application/json";
-            context.HttpContext.Response.StatusCode = (int)code;
-            context.Result = new JsonResult(new
-            {
-                error = new[] { context.Exception.Message }
-            });
-        }
-    }
+			context.HttpContext.Response.ContentType = "application/json";
+			context.HttpContext.Response.StatusCode = (int)code;
+			context.Result = new JsonResult(new
+			{
+				error = new[] { context.Exception.Message }
+			});
+		}
+	}
 }

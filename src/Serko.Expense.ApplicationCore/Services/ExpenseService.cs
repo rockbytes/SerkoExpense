@@ -11,14 +11,14 @@ using ValidationException = Serko.Expense.ApplicationCore.Exceptions.ValidationE
 
 namespace Serko.Expense.ApplicationCore.Services
 {
-    public class ExpenseService : IExpenseService
-    {
-        private readonly IValidator<ExpenseClaimInput> _inputValidator;
+	public class ExpenseService : IExpenseService
+	{
+		private readonly IValidator<ExpenseClaimInput> _inputValidator;
 
-        public ExpenseService(IValidator<ExpenseClaimInput> inputValidator)
-        {
-            _inputValidator = inputValidator;
-        }
+		public ExpenseService(IValidator<ExpenseClaimInput> inputValidator)
+		{
+			_inputValidator = inputValidator;
+		}
 
 		public IDictionary<string, string> CreateExpenseClaimFromInput(ExpenseClaimInput input)
 		{
@@ -29,57 +29,57 @@ namespace Serko.Expense.ApplicationCore.Services
 			return GenerateOutputBasedOnXmlData(xmlData);
 		}
 
-	    private void ValidateExpenseClaimInput(ExpenseClaimInput input)
-	    {
-		    var result = _inputValidator.Validate(input);
-		    if (!result.IsValid)
-		    {
-			    throw new ValidationException(result.Errors);
-		    }
-	    }
+		private void ValidateExpenseClaimInput(ExpenseClaimInput input)
+		{
+			var result = _inputValidator.Validate(input);
+			if (!result.IsValid)
+			{
+				throw new ValidationException(result.Errors);
+			}
+		}
 
 		private static IDictionary<string, string> ExtractXmlDataFromText(string textWithXml)
 		{
 			var xmlRegex = new Regex(@"\<(?<tag>\w+)\>.+\</\k<tag>\>", RegexOptions.Singleline);
 			var matches = xmlRegex.Matches(textWithXml);
 
-            var tagsAndValues = new Dictionary<string, string>();
-		    foreach (Match match in matches)
-		    {
-			    var xmlDoc = XDocument.Parse(match.Groups[0].ToString());
+			var tagsAndValues = new Dictionary<string, string>();
+			foreach (Match match in matches)
+			{
+				var xmlDoc = XDocument.Parse(match.Groups[0].ToString());
 
 				// Select all the leaves (which do not have children)
-			    var leaves = xmlDoc.Descendants().Where(e => !e.Elements().Any());
+				var leaves = xmlDoc.Descendants().Where(e => !e.Elements().Any());
 
 				// Extract the leaf tag name and value. Assume tags does not 
 				// duplicate in the input text. If there are duplicated tags,
 				// the first one will be used.
 				foreach (var leaf in leaves)
-			    {
+				{
 					var tag = leaf.Name.ToString();
 					if (!tagsAndValues.ContainsKey(tag))
 					{
 						tagsAndValues.Add(tag, leaf.Value.Trim());
 					}
-				} 
-		    }
+				}
+			}
 
-		    return tagsAndValues;
+			return tagsAndValues;
 		}
 
 		private static IDictionary<string, string> GenerateOutputBasedOnXmlData(
 			IDictionary<string, string> xmlData)
 		{
-		    var totalWithGst = decimal.Parse(xmlData["total"]);
+			var totalWithGst = decimal.Parse(xmlData["total"]);
 
-            // If client does not specify country_code, default
-            // it to the one of New Zealand.
+			// If client does not specify country_code, default
+			// it to the one of New Zealand.
 			var countryCode = xmlData.ContainsKey("country_code")
 				? xmlData["country_code"]
 				: CountryCodes.NewZealand;
 
-		    // Calculate the gst and the total_without_gst
-            decimal totalWithoutGst = CalculateTotalWithoutGst(totalWithGst,
+			// Calculate the gst and the total_without_gst
+			decimal totalWithoutGst = CalculateTotalWithoutGst(totalWithGst,
 				GstRates.GetRate(countryCode));
 
 			xmlData["total_without_gst"] = totalWithoutGst
@@ -99,9 +99,9 @@ namespace Serko.Expense.ApplicationCore.Services
 		}
 
 		private static decimal CalculateTotalWithoutGst(decimal totalWithGst, decimal gstRate)
-        {
-            decimal totalWithoutGst = totalWithGst / (gstRate + 1);
-            return decimal.Round(totalWithoutGst, 2);
-        }
-    }
+		{
+			decimal totalWithoutGst = totalWithGst / (gstRate + 1);
+			return decimal.Round(totalWithoutGst, 2);
+		}
+	}
 }

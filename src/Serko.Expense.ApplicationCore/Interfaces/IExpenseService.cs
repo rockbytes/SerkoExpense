@@ -3,8 +3,8 @@ using Serko.Expense.ApplicationCore.Dtos;
 
 namespace Serko.Expense.ApplicationCore.Interfaces
 {
-    public interface IExpenseService
-    {
+	public interface IExpenseService
+	{
 		IDictionary<string, string> CreateExpenseClaimFromInput(ExpenseClaimInput input);
-    }
+	}
 }
