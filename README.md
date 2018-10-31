@@ -27,10 +27,10 @@ Regards,
 Jay
 
 Your task is to write a REST service that:
-* Accepts a block of text
-* Extracts the relevant data 
+* Accepts a block of text (assume it is plain text without non-English content, e.g. Germany, and XML tags have no duplications)
+* Extracts the relevant data (all the XML data that are present in the text block)
 * Calculate the GST and total excluding GST based on the extracted <total> (it includes GST)
-* Makes the extracted and calculated data available to the service’s client
+* Makes the extracted and calculated data available to the service’s client (the calculated data and all the XML data that are present in the text block)
 
 ## Failure Conditions
 The following failure conditions should be detected and made available to the client:
