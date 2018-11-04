@@ -11,6 +11,7 @@ using Serko.Expense.ApplicationCore.Interfaces;
 using Serko.Expense.ApplicationCore.Services;
 using Serko.Expense.ApplicationCore.Validators;
 using Serko.Expense.WebApi.Filters;
+using Serko.Expense.WebApi.Formatters;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Serko.Expense.WebApi
@@ -29,12 +30,18 @@ namespace Serko.Expense.WebApi
 		{
 			services.AddScoped<IExpenseService, ExpenseService>();
 
-			services.AddMvc(options => options.Filters.Add(typeof(CustomExceptionFilterAttribute)))
-				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-				.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExpenseClaimInputValidator>());
+            services.AddMvc(options =>
+                {
+                    // To support text/plain or on media type input
+                    options.InputFormatters.Insert(0, new RawRequestBodyFormatter());
 
-			// Register the Swagger generator
-			services.AddSwaggerGen(c =>
+                    options.Filters.Add(typeof(CustomExceptionFilterAttribute));
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExpenseClaimInputValidator>());
+
+            // Register the Swagger generator
+            services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new Info
 				{
