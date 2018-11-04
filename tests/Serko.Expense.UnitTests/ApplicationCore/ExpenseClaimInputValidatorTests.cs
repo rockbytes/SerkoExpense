@@ -2,6 +2,7 @@
 using System.Linq;
 using Serko.Expense.ApplicationCore.Dtos;
 using Serko.Expense.ApplicationCore.Validators;
+using Serko.Expense.TestHelper;
 using Xunit;
 
 namespace Serko.Expense.UnitTests.ApplicationCore
@@ -121,15 +122,7 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 			// Arrange
 			var input = new ExpenseClaimInput
 			{
-				ExpenseClaimText = @"...
-<expense><cost_centre>DEV002</cost_centre>
-<total>1024.01</total><payment_method>personal card</payment_method>
-</expense>
-...
-Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
-<description> development team’s project end celebration dinner </description> on
-<date> Tuesday 27 April 2017 </date>.We expect to arrive around 7.15pm.
-    ..."
+				ExpenseClaimText = CommonData.ValidInput
 			};
 
 			// Act

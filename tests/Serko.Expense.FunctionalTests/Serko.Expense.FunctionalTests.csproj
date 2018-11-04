@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Serko.Expense.ApplicationCore\Serko.Expense.ApplicationCore.csproj" />
     <ProjectReference Include="..\..\src\Serko.Expense.WebApi\Serko.Expense.WebApi.csproj" />
+    <ProjectReference Include="..\Serko.Expense.TestHelper\Serko.Expense.TestHelper.csproj" />
   </ItemGroup>
 
 </Project>
