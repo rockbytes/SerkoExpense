@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Moq;
 using Serko.Expense.ApplicationCore.Dtos;
+using Serko.Expense.ApplicationCore.Interfaces;
 using Serko.Expense.ApplicationCore.Services;
 using Serko.Expense.ApplicationCore.Validators;
 using Serko.Expense.TestHelper;
@@ -10,8 +12,7 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 {
 	public class ExpenseServiceTests
 	{
-		private readonly ExpenseService _service =
-			new ExpenseService(new ExpenseClaimInputValidator());
+	    private readonly ExpenseService _service = GetExpenseService();
 
 		#region CreateExpenseClaimFromInput
 
@@ -117,5 +118,14 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
 		}
 
 		#endregion
+
+	    private static ExpenseService GetExpenseService()
+	    {
+	        var loggerMock = new Mock<IAppLogger<ExpenseService>>();
+
+            return new ExpenseService(
+                new ExpenseClaimInputValidator(),
+                loggerMock.Object);
+        }
 	}
 }

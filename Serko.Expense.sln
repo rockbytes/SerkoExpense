@@ -13,9 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EEA84EDC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serko.Expense.UnitTests", "tests\Serko.Expense.UnitTests\Serko.Expense.UnitTests.csproj", "{596C69C8-1B71-4992-857D-09B7A6FA9814}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expense.FunctionalTests", "tests\Serko.Expense.FunctionalTests\Serko.Expense.FunctionalTests.csproj", "{B4B8D2F5-CC46-4839-9174-ABFF74EC7EFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serko.Expense.FunctionalTests", "tests\Serko.Expense.FunctionalTests\Serko.Expense.FunctionalTests.csproj", "{B4B8D2F5-CC46-4839-9174-ABFF74EC7EFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expense.TestHelper", "tests\Serko.Expense.TestHelper\Serko.Expense.TestHelper.csproj", "{D7100AF7-1D3D-4FF6-AB9D-0A766A03BF03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serko.Expense.TestHelper", "tests\Serko.Expense.TestHelper\Serko.Expense.TestHelper.csproj", "{D7100AF7-1D3D-4FF6-AB9D-0A766A03BF03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serko.Expense.Infrastructure", "src\Serko.Expense.Infrastructure\Serko.Expense.Infrastructure.csproj", "{42AFB11B-0926-47A0-ACC1-B0AE817FFEA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,10 @@ Global
 		{D7100AF7-1D3D-4FF6-AB9D-0A766A03BF03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7100AF7-1D3D-4FF6-AB9D-0A766A03BF03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7100AF7-1D3D-4FF6-AB9D-0A766A03BF03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42AFB11B-0926-47A0-ACC1-B0AE817FFEA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42AFB11B-0926-47A0-ACC1-B0AE817FFEA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42AFB11B-0926-47A0-ACC1-B0AE817FFEA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42AFB11B-0926-47A0-ACC1-B0AE817FFEA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{596C69C8-1B71-4992-857D-09B7A6FA9814} = {EEA84EDC-A8BB-4F33-BB6A-73B3E1AD6CE0}
 		{B4B8D2F5-CC46-4839-9174-ABFF74EC7EFD} = {EEA84EDC-A8BB-4F33-BB6A-73B3E1AD6CE0}
 		{D7100AF7-1D3D-4FF6-AB9D-0A766A03BF03} = {EEA84EDC-A8BB-4F33-BB6A-73B3E1AD6CE0}
+		{42AFB11B-0926-47A0-ACC1-B0AE817FFEA0} = {3D580F7B-3E84-4400-AB64-362F77CDD1BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04856D2D-4F5E-428C-A4D4-BC40DFE66ADC}
