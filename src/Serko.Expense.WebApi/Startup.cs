@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serko.Expense.ApplicationCore.Interfaces;
 using Serko.Expense.ApplicationCore.Services;
 using Serko.Expense.ApplicationCore.Validators;
+using Serko.Expense.Infrastructure.Logging;
 using Serko.Expense.WebApi.Filters;
 using Serko.Expense.WebApi.Formatters;
 using Swashbuckle.AspNetCore.Swagger;
@@ -28,8 +32,14 @@ namespace Serko.Expense.WebApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddScoped<IExpenseService, ExpenseService>();
+		    services.AddLocalization(options =>
+		    {
+		        options.ResourcesPath = "Resources";
+		    });
 
+		    services.AddTransient(typeof(IAppLogger<>), typeof(AppLogger<>));
+            services.AddScoped<IExpenseService, ExpenseService>();
+            
             services.AddMvc(options =>
                 {
                     // To support text/plain or on media type input

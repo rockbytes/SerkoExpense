@@ -3,17 +3,22 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using FluentValidation;
 using FluentValidation.Validators;
+using Microsoft.Extensions.Localization;
 using Serko.Expense.ApplicationCore.Dtos;
 
 namespace Serko.Expense.ApplicationCore.Validators
 {
 	public class ExpenseClaimInputValidator : AbstractValidator<ExpenseClaimInput>
 	{
-		public ExpenseClaimInputValidator()
+	    private readonly IStringLocalizer<ExpenseClaimInputValidator> _localizer;
+
+		public ExpenseClaimInputValidator(IStringLocalizer<ExpenseClaimInputValidator> localizer)
 		{
+		    _localizer = localizer;
+
 			RuleFor(x => x.ExpenseClaimText)
 				.NotEmpty() // NotEmpty covers both the null and empty.
-				.WithMessage(ValidationMessages.ExpenseClaimTextNotBeBlank);
+				.WithMessage(_localizer["ExpenseClaimTextNotBeBlank"]);
 
 			When(x => !string.IsNullOrEmpty(x.ExpenseClaimText), () =>
 			{
@@ -25,7 +30,7 @@ namespace Serko.Expense.ApplicationCore.Validators
 			});
 		}
 
-		private static void NumericTotalValuePresent(string xmlText, CustomContext context)
+		private void NumericTotalValuePresent(string xmlText, CustomContext context)
 		{
 			// Assume the text block contains single <total> amount. If there are multiple ones,
 			// the first will be used.
@@ -37,7 +42,7 @@ namespace Serko.Expense.ApplicationCore.Validators
 			if (!match.Success)
 			{
 				// <total> amount is missing
-				context.AddFailure(ValidationMessages.TotalAmountNotPresentInExpenseClaimText);
+				context.AddFailure(_localizer["TotalAmountNotPresentInExpenseClaimText"]);
 			}
 			else
 			{
@@ -45,12 +50,12 @@ namespace Serko.Expense.ApplicationCore.Validators
 				var total = match.Groups["value"].ToString();
 				if (!decimal.TryParse(total.Trim(), out var dummy))
 				{
-					context.AddFailure(string.Format(ValidationMessages.TotalAmountShouldBeNumeric, total));
+					context.AddFailure(_localizer["TotalAmountShouldBeNumeric", total]);
 				}
 			}
 		}
 
-		private static void OpeningClosingTagsMatched(string xmlText, CustomContext context)
+		private void OpeningClosingTagsMatched(string xmlText, CustomContext context)
 		{
 			var tagsPresent = ExtractXmlTagsPresentInText(xmlText);
 
@@ -69,7 +74,7 @@ namespace Serko.Expense.ApplicationCore.Validators
 			return tags;
 		}
 
-		private static void ValidateOpeningClosingTagsMatched(IEnumerable<string> tags, CustomContext context)
+		private void ValidateOpeningClosingTagsMatched(IEnumerable<string> tags, CustomContext context)
 		{
 			var closingTags = new Stack<string>();
 
@@ -83,8 +88,8 @@ namespace Serko.Expense.ApplicationCore.Validators
 				{
 					if (closingTags.Count == 0)
 					{
-						context.AddFailure(string.Format(
-							ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag));
+						context.AddFailure(
+							_localizer["OpeningTagXHasNoCorrespondingClosingTags", tag]);
 
 						return;
 					}
@@ -93,8 +98,8 @@ namespace Serko.Expense.ApplicationCore.Validators
 					if (!currClosingTag.Equals($"/{tag}"))
 					{
 						var msg = closingTags.Contains($"/{tag}")
-							? string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, currClosingTag)
-							: string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag);
+							? _localizer["ClosingTagXHasNoCorrespondingOpeningTags", currClosingTag]
+							: _localizer["OpeningTagXHasNoCorrespondingClosingTags", tag];
 
 						context.AddFailure(msg);
 
@@ -105,8 +110,8 @@ namespace Serko.Expense.ApplicationCore.Validators
 
 			if (closingTags.Count > 0)
 			{
-				context.AddFailure(string.Format(
-					ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, closingTags.Peek()));
+				context.AddFailure(
+					_localizer["ClosingTagXHasNoCorrespondingOpeningTags", closingTags.Peek()]);
 			}
 		}
 	}

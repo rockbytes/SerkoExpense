@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Serko.Expense.ApplicationCore.Validators;
 
 namespace Serko.Expense.TestHelper
@@ -73,13 +72,12 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</vendorDummySuffix>
         public static Dictionary<string, string[]> MissingClosingTagErrors =>
             new Dictionary<string, string[]>
             {
-                ["ExpenseClaimText"] = new[]
+                ["ExpenseClaimText"] = new string[]
                 {
-                    string.Format(ValidationMessages
-                        .OpeningTagXHasNoCorrespondingClosingTags, "vendor")
+                    TestStringLocalizerFactory<ExpenseClaimInputValidator>
+                    .Localizer["OpeningTagXHasNoCorrespondingClosingTags", "vendor"]
                 }
             };
         #endregion
-
     }
 }

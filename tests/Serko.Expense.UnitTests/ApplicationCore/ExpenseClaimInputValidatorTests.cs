@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Localization;
 using Serko.Expense.ApplicationCore.Dtos;
 using Serko.Expense.ApplicationCore.Validators;
 using Serko.Expense.TestHelper;
@@ -9,12 +10,18 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 {
 	public class ExpenseClaimInputValidatorTests
 	{
-		private readonly ExpenseClaimInputValidator _inputValidator =
-			new ExpenseClaimInputValidator();
+	    private readonly IStringLocalizer<ExpenseClaimInputValidator> _localizer;
+	    private readonly ExpenseClaimInputValidator _inputValidator;
 
-		#region NotNullEmpty
+	    public ExpenseClaimInputValidatorTests()
+	    {
+	        _localizer = TestStringLocalizerFactory<ExpenseClaimInputValidator>.Localizer;
+	        _inputValidator = CreateValidator(_localizer);
+	    }
 
-		[Fact]
+        #region NotNullEmpty
+
+        [Fact]
 		public void NotNullEmpty_Empty()
 		{
 			// Arrange
@@ -22,7 +29,8 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 
 			var expectedErrorMsgs = new List<string>
 			{
-				ValidationMessages.ExpenseClaimTextNotBeBlank
+                _localizer["ExpenseClaimTextNotBeBlank"]
+                
 			};
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -36,8 +44,8 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 
 			var expectedErrorMsgs = new List<string>
 			{
-				ValidationMessages.ExpenseClaimTextNotBeBlank
-			};
+			    _localizer["ExpenseClaimTextNotBeBlank"]
+            };
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
 		}
@@ -74,7 +82,7 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 
 			var expectedErrorMsgs = new List<string>
 			{
-				string.Format(ValidationMessages.TotalAmountShouldBeNumeric, amount)
+                _localizer["TotalAmountShouldBeNumeric", amount]
 			};
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -89,7 +97,7 @@ namespace Serko.Expense.UnitTests.ApplicationCore
 
 			var expectedErrorMsgs = new List<string>
 			{
-				ValidationMessages.TotalAmountNotPresentInExpenseClaimText
+                _localizer["TotalAmountNotPresentInExpenseClaimText"]
 			};
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -105,8 +113,8 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 
 			var expectedErrorMsgs = new List<string>
 			{
-				string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, tag),
-				ValidationMessages.TotalAmountNotPresentInExpenseClaimText
+                _localizer["ClosingTagXHasNoCorrespondingOpeningTags", tag],
+                _localizer["TotalAmountNotPresentInExpenseClaimText"]
 			};
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -143,7 +151,7 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 
 			var expectedErrorMsgs = new List<string>
 			{
-				string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, tag)
+                _localizer["ClosingTagXHasNoCorrespondingOpeningTags", tag]
 			};
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -159,8 +167,8 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 
 			var expectedErrorMsgs = new List<string>
 			{
-				string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag)
-			};
+			    _localizer["OpeningTagXHasNoCorrespondingClosingTags", tag]
+            };
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
 		}
@@ -175,9 +183,9 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 
 			var expectedErrorMsgs = new List<string>
 			{
-				string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, tag),
-				ValidationMessages.TotalAmountNotPresentInExpenseClaimText
-			};
+			    _localizer["OpeningTagXHasNoCorrespondingClosingTags", tag],
+			    _localizer["TotalAmountNotPresentInExpenseClaimText"]
+            };
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
 		}
@@ -191,7 +199,7 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 
 			var expectedErrorMsgs = new List<string>
 			{
-				string.Format(ValidationMessages.OpeningTagXHasNoCorrespondingClosingTags, "payment_method"),
+                _localizer["OpeningTagXHasNoCorrespondingClosingTags", "payment_method"]
 			};
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
@@ -206,8 +214,8 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 
 			var expectedErrorMsgs = new List<string>
 			{
-				string.Format(ValidationMessages.ClosingTagXHasNoCorrespondingOpeningTags, "/cost_centre"),
-			};
+			    _localizer["ClosingTagXHasNoCorrespondingOpeningTags", "/cost_centre"]
+            };
 
 			ActAndAssert(expenseClaimText, expectedErrorMsgs);
 		}
@@ -225,5 +233,11 @@ total>1024.01<{tag}><payment_method>personal card</payment_method>";
 			// Assert
 			Assert.Equal(expectedErrorMsgs, result.Errors.Select(e => e.ErrorMessage));
 		}
-	}
+
+        private static ExpenseClaimInputValidator CreateValidator(
+            IStringLocalizer<ExpenseClaimInputValidator> localizer)
+        {
+            return new ExpenseClaimInputValidator(localizer);
+        }
+    }
 }

@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Serko.Expense.ApplicationCore\Serko.Expense.ApplicationCore.csproj" />
+    <ProjectReference Include="..\Serko.Expense.Infrastructure\Serko.Expense.Infrastructure.csproj" />
   </ItemGroup>
 
     <PropertyGroup>

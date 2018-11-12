@@ -14,10 +14,13 @@ namespace Serko.Expense.ApplicationCore.Services
 	public class ExpenseService : IExpenseService
 	{
 		private readonly IValidator<ExpenseClaimInput> _inputValidator;
+	    private readonly IAppLogger<ExpenseService> _logger;
 
-		public ExpenseService(IValidator<ExpenseClaimInput> inputValidator)
+		public ExpenseService(IValidator<ExpenseClaimInput> inputValidator, 
+            IAppLogger<ExpenseService> logger)
 		{
 			_inputValidator = inputValidator;
+		    _logger = logger;
 		}
 
 		public IDictionary<string, string> CreateExpenseClaimFromInput(ExpenseClaimInput input)
@@ -34,6 +37,7 @@ namespace Serko.Expense.ApplicationCore.Services
 			var result = _inputValidator.Validate(input);
 			if (!result.IsValid)
 			{
+                _logger.Error($"ValidateExpenseClaimInput failed:\n{string.Join("\n", result.Errors)}");
 				throw new ValidationException(result.Errors);
 			}
 		}
