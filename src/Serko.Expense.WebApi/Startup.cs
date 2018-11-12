@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +32,11 @@ namespace Serko.Expense.WebApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+		    services.AddLocalization(options =>
+		    {
+		        options.ResourcesPath = "Resources";
+		    });
+
 		    services.AddTransient(typeof(IAppLogger<>), typeof(AppLogger<>));
             services.AddScoped<IExpenseService, ExpenseService>();
             

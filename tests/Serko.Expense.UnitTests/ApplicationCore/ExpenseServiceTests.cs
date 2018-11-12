@@ -122,9 +122,9 @@ Please create a reservation at the<vendor>Viaduct Steakhouse</vendor> our
 	    private static ExpenseService GetExpenseService()
 	    {
 	        var loggerMock = new Mock<IAppLogger<ExpenseService>>();
+	        var localizer = TestStringLocalizerFactory<ExpenseClaimInputValidator>.Localizer;
 
-            return new ExpenseService(
-                new ExpenseClaimInputValidator(),
+            return new ExpenseService(new ExpenseClaimInputValidator(localizer),
                 loggerMock.Object);
         }
 	}
